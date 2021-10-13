@@ -3,6 +3,7 @@
 const express = require("express");
 const quotesRoutes = require("./quotesRoutes")
 
+const nunjucks = require("nunjucks");
 const app = express();
 const cors = require('cors');
 const { NotFoundError } = require("./expressError");
@@ -10,6 +11,16 @@ const { NotFoundError } = require("./expressError");
 app.use(express.json());
 app.use(cors());
 app.use('/quotes', quotesRoutes);
+
+nunjucks.configure('templates', {
+  autoescape: true,
+  express: app
+});
+
+/** Get homepage */
+app.get("/", function (req, res, next) {
+  res.render("home.html")
+})
 
 /** 404 handler: matches unmatched routes; raises NotFoundError. */
 app.use(function (req, res, next) {
